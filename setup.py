@@ -6,7 +6,8 @@ from setuptools import setup, find_packages
 from egor.config import VERSION
 
 DEPENDENCIES = [
-    'knack'
+    'knack',
+    'urllib3'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:

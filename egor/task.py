@@ -32,6 +32,8 @@ def task_template_content(lang):
 def parse_task(lang='cpp'):
     """
     This will watch a new event from CHelper extension to create a new task
+    :param lang: your source file language
+    :return: None
     """
     print(resource_filename('egor.templates', 'template.java'))
 

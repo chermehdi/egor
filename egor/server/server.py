@@ -1,10 +1,9 @@
-import sys
 import json
-import http.server
+import os
 import socketserver
 from http.server import BaseHTTPRequestHandler
+
 import urllib3
-import os
 from knack.log import get_logger
 
 logger = get_logger(__name__)
