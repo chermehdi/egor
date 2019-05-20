@@ -8,4 +8,4 @@
 
 ## Usage
 
-- just install egor by doing `pip install egore`
+- just install egor by doing `pip install egor`

@@ -31,5 +31,4 @@ def launch():
     help_command = is_help_command(arguments)
     exit_code = cli_env.invoke(args=arguments)
 
-    if help_command:
-        return 0
+    return exit_code
