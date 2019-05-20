@@ -1,6 +1,7 @@
 """
 Utilities function used accross the project
 """
+import os
 
 
 def is_help_command(command):
@@ -13,3 +14,15 @@ def is_help_command(command):
         if part in ('-h', '--help'):
             return True
     return False
+
+
+def get_current_directory(*paths):
+    """
+    Computes and returns the absolute path to the current directory
+    if paths are specified, they are joined with with the current directory path
+    """
+    cur_dir_path = os.path.abspath(os.path.curdir)
+    if len(paths):
+        cur_dir_path = os.path.join(cur_dir_path, *paths)
+
+    return cur_dir_path

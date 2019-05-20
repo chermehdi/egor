@@ -31,7 +31,8 @@ setup(
         'Programming Language :: Python :: 3.7',
         'License :: MIT License',
     ],
-    packages=['egor'],
+    packages=find_packages(),
+    package_data={'': ['*.cpp', '*.java']},
     install_requires=DEPENDENCIES,
     extras_require={
         ':python_version<"3.4"': ['enum34']

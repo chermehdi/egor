@@ -1,4 +1,5 @@
 from knack.help import CLIHelp
+from knack.arguments import ArgumentsContext
 from knack.commands import CLICommandsLoader, CommandGroup
 from collections import OrderedDict
 from egor.config import VERSION
@@ -43,3 +44,8 @@ class EgorCommandLoader(CLICommandsLoader):
             g.command('test', 'test_task')
             g.command('remove', 'remove_task')
         return OrderedDict(self.command_table)
+
+    def load_arguments(self, command):
+        with ArgumentsContext(self, 'task parse') as args_context:
+            args_context.argument('lang', type=str, default='cpp')
+        super(EgorCommandLoader, self).load_arguments(command)

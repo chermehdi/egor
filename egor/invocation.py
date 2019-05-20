@@ -9,5 +9,5 @@ class EgorInvoker(CommandInvoker):
         except TypeError as e:
             from knack.log import get_logger
             logger = get_logger(__name__)
-            logger.error('Could not execute egor command')
+            logger.error('Could not execute egor command ', e)
             return CommandResultItem(None, exit_code=0)
