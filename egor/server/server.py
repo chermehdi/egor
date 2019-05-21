@@ -60,10 +60,6 @@ class TaskServer(BaseHTTPRequestHandler):
         create_task(task_description)
 
 
-def handler(value):
-    print(value)
-
-
 def start_server(port):
     with socketserver.TCPServer(('127.0.0.1', port), TaskServer) as httpd:
         httpd.handle_request()

@@ -20,7 +20,7 @@ public class Main {
     StringTokenizer st;
 
     public InputReader(InputStream is) {
-      in = new BufferedReader(new BufferedInputStream(in, 1 << 15));
+      in = new BufferedReader(new InputStreamReader(is));
     }
 
     public String next() {

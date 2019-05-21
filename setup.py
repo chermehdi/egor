@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
+
 from setuptools import setup, find_packages
 
 from egor.config import VERSION
 
 DEPENDENCIES = [
     'knack',
-    'urllib3'
+    'urllib3',
+    'pyperclip'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:
