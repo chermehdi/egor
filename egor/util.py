@@ -1,5 +1,5 @@
 """
-Utilities function used accross the project
+Utilities function used across the project
 """
 import os
 
