@@ -18,6 +18,7 @@ def execute_java_task(file_name, directory_path):
         JavaCompileStep(),
         JavaRunStep(),
         JavaCleanupStep(),
+        TestingStep()
     ])
 
     pipeline.execute(execution_context)

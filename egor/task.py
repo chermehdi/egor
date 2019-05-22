@@ -8,9 +8,9 @@ from knack.log import get_logger
 from pkg_resources import resource_filename
 
 from egor.config import get_configuration_value
-from egor.judge import execute_cpp_task
+from egor.judge import execute_cpp_task, execute_java_task
 from egor.server import start_server
-from egor.util import get_current_directory
+from egor.util import get_current_directory, get_default_language
 
 logger = get_logger(__name__)
 
@@ -33,7 +33,7 @@ def task_template_content(lang):
         return file_template.read()
 
 
-def parse_task(lang='cpp'):
+def parse_task(lang=get_default_language()):
     """
     This will watch a new event from CHelper extension to create a new task
     :param lang: your source file language
@@ -50,7 +50,7 @@ def parse_task(lang='cpp'):
         task_source.write(task_template_content(lang))
 
 
-def test_task(name='__current_dir', lang='cpp'):
+def test_task(name='__current_dir', lang=get_default_language()):
     """
     This will test an already parsed task, it will compile and run against input files and
     it will print the results
@@ -58,34 +58,39 @@ def test_task(name='__current_dir', lang='cpp'):
     :param name: Name of the task you want to run
     :return: None
     """
+    task_dir = get_current_directory(name)
     if name == '__current_dir':
-        pass
-    else:
-        task_dir = get_current_directory(name)
-        if not os.path.exists(task_dir):
-            logger.error('No task with the given name {}'.format(name))
+        task_dir = get_current_directory()
+
+    if not os.path.exists(task_dir):
+        logger.error('No task with the given name {}'.format(name))
+        return
+    input_files_path = os.path.join(task_dir, 'input')
+    output_files_path = os.path.join(task_dir, 'output')
+    if not os.path.exists(input_files_path):
+        logger.error('There is no input specified for this task, or input directory is missing')
+    if not os.path.exists(output_files_path):
+        logger.error('There is no output specified for this taks, or output directory is missing')
+
+    input_files = os.listdir(input_files_path)
+    output_files = os.listdir(output_files_path)
+
+    # make sure every file name has a correspondent output file
+    for input_file_name in input_files:
+        input_file_parts = input_file_name.split('.')
+        expected_output_file_name = input_file_parts[0] + '-expected.out'
+        if not (expected_output_file_name in output_files):
+            logger.error('could not file corresponding to output file : {}'.format(input_file_name))
             return
-        input_files_path = os.path.join(task_dir, 'input')
-        output_files_path = os.path.join(task_dir, 'output')
-        if not os.path.exists(input_files_path):
-            logger.error('There is no input specified for this task, or input directory is missing')
-        if not os.path.exists(output_files_path):
-            logger.error('There is no output specified for this taks, or output directory is missing')
 
-        input_files = os.listdir(input_files_path)
-        output_files = os.listdir(output_files_path)
+    source_filename = os.path.join(task_dir, get_file_name(lang))
 
-        # make sure every file name has a correspondent output file
-        for input_file_name in input_files:
-            input_file_parts = input_file_name.split('.')
-            expected_output_file_name = input_file_parts[0] + '-expected.out'
-            if not (expected_output_file_name in output_files):
-                logger.error('could not file corresponding to output file : {}'.format(input_file_name))
-                return
-
-        execute_cpp_task(os.path.join(task_dir, 'main.cpp'), task_dir)
-
-        print("test task {name}".format(name=name))
+    if lang == 'cpp':
+        execute_cpp_task(source_filename, task_dir)
+    elif lang == 'java':
+        execute_java_task(source_filename, task_dir)
+    else:
+        logger.error('Language specified {} is not yet supported'.format(lang))
 
 
 def remove_task(name):
@@ -95,7 +100,7 @@ def remove_task(name):
     print("remove task {name}".format(name=name))
 
 
-def copy_task(name='__current_dir', lang='cpp'):
+def copy_task(name='__current_dir', lang=get_default_language()):
     """
     Copy task source file to clipboard
     :param name: name of directory of task

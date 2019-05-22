@@ -83,7 +83,11 @@ class TestingStep(Step):
     def execute(self, execution_context):
         checker = BasicChecker()
         report = checker.check(execution_context)
-        print('rapprot {}'.format(report))
+        sep = '=' * 50
+        for test_number in report:
+            print(sep)
+            print(report[test_number])
+        print(sep)
         return execution_context
 
     def name(self):

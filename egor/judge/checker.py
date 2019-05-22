@@ -1,5 +1,8 @@
 import os
 
+from egor.util import extract_test_number_from_filename, DIFFERENT_OUTPUT_CONTENT_TEMPLATE, \
+    DIFFERENT_OUTPUT_LENGTH_TEMPLATE, PASSED_TEST_CASE
+
 
 class Checker:
     """
@@ -28,20 +31,21 @@ class Checker:
 
         diff = {}
 
-        for index, test_case in enumerate(zip(judge_output, contestant_output)):
+        for index, test_case in enumerate(zip(contestant_output, judge_output)):
             c_file, j_file = test_case
             c_file, j_file = os.path.join(output_directory, c_file), os.path.join(output_directory, j_file)
             # todo: add a more convenient diffing
-            if not self.compare(c_file, j_file):
-                diff[index] = 'Different output'
+            test_number = extract_test_number_from_filename(c_file)
+            diff[test_number] = self.compare(c_file, j_file, test_number)
         return diff
 
-    def compare(self, file_1, file2):
+    def compare(self, file_1, file2, test_number):
         """
         Compares the content of two files.
         Implementation is dependent on the type of data that we are trying to compare, either precision comparison,
         line by line comparison, should we skip spaces or not...
 
+        :param test_number: Number of the current test case
         :param file_1: judge's output file
         :param file2:  contestant's output file
         :return: True if the files content's can be considered equal, False otherwise
@@ -53,8 +57,16 @@ class BasicChecker(Checker):
     """
     Simple line by line checker, two files are different if their content is different by any character, even
     white spaces
+    :return Message representing the state of the comparison
     """
 
-    def compare(self, file_1, file_2):
-        with open(file_1) as f1, open(file_2) as f2:
-            return f1.read() == f2.read()
+    def compare(self, output, expected, test_number) -> str:
+        with open(output) as out_f, open(expected) as ex_file:
+            output = out_f.readlines()
+            expected_output = ex_file.readlines()
+            if len(output) != len(expected_output):
+                return DIFFERENT_OUTPUT_LENGTH_TEMPLATE.format(len(expected_output), len(output))
+            for index, line_pair in enumerate(zip(expected_output, output)):
+                if line_pair[0] != line_pair[1]:
+                    return DIFFERENT_OUTPUT_CONTENT_TEMPLATE.format(index + 1, line_pair[0], line_pair[1])
+            return PASSED_TEST_CASE.format(test_number)
