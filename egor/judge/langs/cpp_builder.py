@@ -31,7 +31,7 @@ class CppCompileStep(CompileStep):
                                       cwd=execution_context['target_directory'])
 
         if return_code != 0:
-            logger.erro('Could not compile the given file')
+            logger.error('Could not compile the given file')
             sys.exit(-1)
 
         execution_context['binary_name'] = DEFAULT_BINARY_NAME
@@ -55,8 +55,11 @@ class CppRunStep(RunStep):
             output_file_name = 'in-{}.out'.format(input_number)
             with open(os.path.join(input_dir, input_file), "r") as in_f, \
                     open(os.path.join(output_dir, output_file_name), "w") as out_f:
+                executable = '{}.exe'.format(
+                    execution_context['binary_name']) if sys.platform == 'win32' else './{}'.format(
+                    execution_context['binary_name'])
                 logger.info('Running your code against input file {}'.format(input_file))
-                return_code = subprocess.call(['./' + execution_context['binary_name']], stdin=in_f, stdout=out_f,
+                return_code = subprocess.call([executable], stdin=in_f, stdout=out_f,
                                               cwd=task_directory)
                 if return_code != 0:
                     skipped_file_names.append(str(input_number))
