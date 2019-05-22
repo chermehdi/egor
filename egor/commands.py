@@ -17,7 +17,8 @@ class EgorCommandHelp(CLIHelp):
     """
 
     def __init__(self, cli_ctx=None):
-        header_message = """
+        header_message = \
+            """
             ______
           / ____/___  _____ _____
          / __/ / __ `/ __ \/ ___/
@@ -25,7 +26,9 @@ class EgorCommandHelp(CLIHelp):
        /_____/\__, /\____/_/
              /____/            version: {}
       |------------------------------------>>
-      """.format(VERSION)
+        
+      Commands:
+            """.format(VERSION)
 
         super(EgorCommandHelp, self).__init__(
             cli_ctx=cli_ctx, welcome_message=header_message)
