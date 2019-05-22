@@ -38,7 +38,7 @@ setup(
     package_data={'': ['*.cpp', '*.java']},
     install_requires=DEPENDENCIES,
     extras_require={
-        ':python_version<"3.4"': ['enum34']
+        ':python_version>"3.6"': ['enum34']
     },
     entry_points={
         'console_scripts': ['egor=egor:launch']
