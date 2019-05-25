@@ -6,6 +6,7 @@ from knack.help import CLIHelp
 
 from egor.config import VERSION
 from egor.help import HelpGenerator
+from egor.util import get_default_language
 
 # load helps
 HelpGenerator().load()
@@ -49,11 +50,17 @@ class EgorCommandLoader(CLICommandsLoader):
             g.command('test', 'test_task')
             g.command('remove', 'remove_task')
             g.command('copy', 'copy_task')
+            g.command('testcase', 'new_test_case')
         return OrderedDict(self.command_table)
 
     def load_arguments(self, command):
+        with ArgumentsContext(self, 'task') as args_context:
+            args_context.argument('name', type=str, default='__current_dir')
         with ArgumentsContext(self, 'task parse') as args_context:
-            args_context.argument('lang', type=str, default='cpp')
-        with ArgumentsContext(self, 'task teset') as args_context:
-            args_context.argument('name', type=str, default='')
+            args_context.argument('lang', type=str, default=get_default_language())
+        with ArgumentsContext(self, 'task test') as args_context:
+            args_context.argument('lang', type=str, default=get_default_language())
+        with ArgumentsContext(self, 'task testcase') as args_context:
+            args_context.argument('with-output', default=False)
+
         super(EgorCommandLoader, self).load_arguments(command)

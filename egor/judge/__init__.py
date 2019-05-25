@@ -4,15 +4,14 @@ from .langs import JavaCompileStep, JavaRunStep, JavaCleanupStep, CppCompileStep
     CppCleanupStep
 
 
-def get_execution_context(file_name, directory_path):
+def get_execution_context(task_meta):
     return {
-        'target_file': file_name,
-        'target_directory': directory_path
+        'meta': task_meta
     }
 
 
-def execute_java_task(file_name, directory_path):
-    execution_context = get_execution_context(file_name, directory_path)
+def execute_java_task(task_meta):
+    execution_context = get_execution_context(task_meta)
 
     pipeline = ExecutionPipeline([
         JavaCompileStep(),
@@ -24,8 +23,8 @@ def execute_java_task(file_name, directory_path):
     pipeline.execute(execution_context)
 
 
-def execute_cpp_task(file_name, directory_path):
-    execution_context = get_execution_context(file_name, directory_path)
+def execute_cpp_task(task_meta):
+    execution_context = get_execution_context(task_meta)
 
     pipeline = ExecutionPipeline([
         CppCompileStep(),
@@ -37,5 +36,5 @@ def execute_cpp_task(file_name, directory_path):
     pipeline.execute(execution_context)
 
 
-def execute_python_task(file_name, directory_path):
+def execute_python_task(task_meta):
     pass

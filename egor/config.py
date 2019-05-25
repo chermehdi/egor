@@ -1,9 +1,9 @@
 """
-  Config file to store all constents for the project
+  Config file to store all contestants for the project
 """
 
 import os
-from knack import CLI
+
 from knack.config import CLIConfig
 
 COMMAND_NAME = 'egor'

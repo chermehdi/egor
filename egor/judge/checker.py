@@ -1,7 +1,7 @@
 import os
 
-from egor.util import extract_test_number_from_filename, DIFFERENT_OUTPUT_CONTENT_TEMPLATE, \
-    DIFFERENT_OUTPUT_LENGTH_TEMPLATE, PASSED_TEST_CASE
+from egor.util import DIFFERENT_OUTPUT_CONTENT_TEMPLATE, \
+    DIFFERENT_OUTPUT_LENGTH_TEMPLATE, PASSED_TEST_CASE, SKIPPED_TEST_CASE
 
 
 class Checker:
@@ -17,26 +17,22 @@ class Checker:
         :param execution_context: dictionary of all current execution parameters
         :return: dictionary of the results
         """
-        target_directory = execution_context['target_directory']
-        output_directory = os.path.join(target_directory, 'output')
+        task_meta = execution_context['meta']
 
         # We might want to skip comparing some files because they timed out or they just don't exist
         skipped_file_names = execution_context['skipped_file_names']
 
-        output_files = os.listdir(output_directory)
-
-        judge_output = sorted(list(filter(lambda file: 'expected' in file, output_files)))
-
-        contestant_output = sorted(list(filter(lambda file: 'expected' not in file, output_files)))
-
         diff = {}
 
-        for index, test_case in enumerate(zip(contestant_output, judge_output)):
-            c_file, j_file = test_case
-            c_file, j_file = os.path.join(output_directory, c_file), os.path.join(output_directory, j_file)
-            # todo: add a more convenient diffing
-            test_number = extract_test_number_from_filename(c_file)
-            diff[test_number] = self.compare(c_file, j_file, test_number)
+        for test_description in task_meta.tests:
+            test_index, test_expected_output_path = test_description['index'], test_description['output_file']
+            contestant_output_path = os.path.join(task_meta.output_dir, 'in-{}.out'.format(test_index))
+            if test_description['custom']:
+                if test_expected_output_path == '':
+                    diff[test_index] = SKIPPED_TEST_CASE.format(test_index)
+                    continue
+            diff[test_index] = self.compare(contestant_output_path, test_expected_output_path, test_index)
+
         return diff
 
     def compare(self, file_1, file2, test_number):
@@ -66,7 +62,13 @@ class BasicChecker(Checker):
             expected_output = ex_file.readlines()
             if len(output) != len(expected_output):
                 return DIFFERENT_OUTPUT_LENGTH_TEMPLATE.format(len(expected_output), len(output))
+
+            while len(output) and output[len(output) - 1].strip() == '':
+                output.pop()
+            while len(expected_output) and output[len(expected_output) - 1].strip() == '':
+                expected_output.pop()
+
             for index, line_pair in enumerate(zip(expected_output, output)):
-                if line_pair[0] != line_pair[1]:
+                if line_pair[0].strip() != line_pair[1].strip():
                     return DIFFERENT_OUTPUT_CONTENT_TEMPLATE.format(index + 1, line_pair[0], line_pair[1])
             return PASSED_TEST_CASE.format(test_number)

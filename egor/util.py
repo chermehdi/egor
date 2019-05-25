@@ -2,6 +2,7 @@
 Utilities function used across the project
 """
 import os
+import sys
 
 from egor.config import get_configuration_value
 
@@ -60,3 +61,40 @@ DIFFERENT_OUTPUT_CONTENT_TEMPLATE = \
     """
 
 PASSED_TEST_CASE = 'Passed test case {}'
+
+SKIPPED_TEST_CASE = 'Skipped test case {}'
+
+
+def get_last_input_file_number(input_dir) -> int:
+    """
+    Will get the last input file number in the input directory.
+    The function will find all input file numbers and will return the max
+    :param input_dir: input directory
+    :return: number of last input file
+    """
+    return max(list(map(extract_test_number_from_filename, os.listdir(input_dir))))
+
+
+def get_meta_data_path(task_dir) -> str:
+    """
+    Returns the path to the metadata file path, by just adding 'egor-meta.json' with the current task dir
+    :param task_dir: Current task directory
+    :return: path to the metadata file
+    """
+    return os.path.join(task_dir, 'egor-meta.json')
+
+
+def is_mac_os() -> bool:
+    """
+    :return: True if is mac os False otherwise
+    """
+    return sys.platform == 'darwin'
+
+
+def get_eof_signal_key() -> str:
+    """
+    Returns the key binding associated to EOF depending on which platform
+    Egor is running on
+    :return: Key binding description
+    """
+    return 'Cmd + D' if is_mac_os() else 'Ctrl + D'

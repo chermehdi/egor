@@ -2,11 +2,11 @@
   Entry point of the command line helper
 """
 import sys
+
 from knack import CLI
-from knack.invocation import CommandInvoker
-from egor.util import is_help_command
-from egor.config import COMMAND_ENV_PREFIX, COMMAND_NAME, COMMAND_SETTINGS_DIR
+
 from egor.commands import EgorCommandHelp, EgorCommandLoader
+from egor.config import COMMAND_ENV_PREFIX, COMMAND_NAME, COMMAND_SETTINGS_DIR
 from egor.invocation import EgorInvoker
 
 
@@ -28,7 +28,6 @@ def launch():
 
     arguments = sys.argv[1:]
     cli_env = cli()
-    help_command = is_help_command(arguments)
     exit_code = cli_env.invoke(args=arguments)
 
     return exit_code

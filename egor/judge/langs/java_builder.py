@@ -25,12 +25,13 @@ class JavaCompileStep(CompileStep):
 
     def execute(self, execution_context):
         logger.info('Compiling your source code ...')
+        task_meta = execution_context['meta']
 
         java_executable = get_configuration_value('EGOR_JAVA_COMPILER', fallback='javac')
-        target_file, target_directory = extract_target_paths(execution_context)
+        target_file, target_directory = task_meta.source_file, task_meta.dir
         work_directory = os.path.join(target_directory, 'work')
         os.makedirs(work_directory, exist_ok=True)
-        java_flags = '-d work'.split(' ')
+        java_flags = '-d {}'.format(work_directory).split(' ')
         if subprocess.call([java_executable, *java_flags, target_file]) != 0:
             logger.error('Could not compile your code ')
             sys.exit(-1)
@@ -44,27 +45,21 @@ class JavaRunStep(RunStep):
 
     def execute(self, execution_context):
         logger.info('Running your code ...')
+        task_meta = execution_context['meta']
         work_dir = execution_context['work_directory']
-        task_file, task_directory = extract_target_paths(execution_context)
-        input_dir = os.path.join(task_directory, 'input')
-        output_dir = os.path.join(task_directory, 'output')
-
-        input_files = os.listdir(input_dir)
 
         skipped_file_names = []
-
-        for input_file in input_files:
-            # ugly code
-            input_number = int(input_file.split('-')[1].split('.')[0])
-            output_file_name = 'in-{}.out'.format(input_number)
-            with open(os.path.join(input_dir, input_file), "r") as in_f, \
-                    open(os.path.join(output_dir, output_file_name), "w") as out_f:
-                logger.info('Running your code against input file {}'.format(input_file))
+        for test_description in task_meta.tests:
+            test_input_path, test_index = test_description['input_file'], test_description['index']
+            test_output_path = os.path.join(task_meta.output_dir, 'in-{}.out'.format(test_index))
+            with open(test_input_path) as in_f, open(test_output_path, "w") as out_f:
+                logger.info('Running your code against input file {}'.format(test_index))
+                # maybe we add a dynamic way to determine the main class
                 return_code = subprocess.call(['java', 'Main'], stdin=in_f, stdout=out_f,
                                               cwd=work_dir)
                 if return_code != 0:
-                    skipped_file_names.append(str(input_number))
-                    logger.error('execution on file {} finished with a none 0 exist code'.format(input_file))
+                    skipped_file_names.append(str(test_index))
+                    logger.error('execution on file {} finished with a none 0 exist code'.format(test_index))
 
         execution_context['skipped_file_names'] = skipped_file_names
 
@@ -74,9 +69,8 @@ class JavaRunStep(RunStep):
 class JavaCleanupStep(CleanupStep):
 
     def execute(self, execution_context):
-        target_directory = execution_context['target_directory']
-        work_directory = os.path.join(target_directory, 'work')
+        task_meta = execution_context['meta']
+        work_directory = os.path.join(task_meta.dir, 'work')
         shutil.rmtree(work_directory)
         logger.info('Cleanup work directory {}'.format(work_directory))
-
         return execution_context
