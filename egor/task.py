@@ -79,7 +79,7 @@ def test_task(name='__current_dir', lang='cpp'):
     if not os.path.exists(input_files_path):
         logger.error('There is no input specified for this task, or input directory is missing')
     if not os.path.exists(output_files_path):
-        logger.error('There is no output specified for this taskz, or output directory is missing')
+        logger.error('There is no output specified for this task, or output directory is missing')
 
     if lang == 'cpp':
         execute_cpp_task(task_meta)

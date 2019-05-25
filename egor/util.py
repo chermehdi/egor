@@ -4,7 +4,13 @@ Utilities function used across the project
 import os
 import sys
 
+from colorama import init, Fore, Style
+
 from egor.config import get_configuration_value
+
+# initialize colorama to print colored text
+
+init()
 
 
 def is_help_command(command) -> bool:
@@ -98,3 +104,33 @@ def get_eof_signal_key() -> str:
     :return: Key binding description
     """
     return 'Cmd + D' if is_mac_os() else 'Ctrl + D'
+
+
+def print_green_text(text: str) -> None:
+    """
+    Prints Green screen to the console, and then reset the console to it's original color
+    :param text:
+    :return:
+    """
+    print(Fore.GREEN + text)
+    print(Style.RESET_ALL)
+
+
+def print_red_text(text: str) -> None:
+    """
+    Prints Green screen to the console, and then reset the console to it's original color
+    :param text:
+    :return:
+    """
+    print(Fore.RED + text)
+    print(Style.RESET_ALL)
+
+
+def print_yellow_text(text: str) -> None:
+    """
+    Prints yellow screen to the console, and then reset the console to it's original color
+    :param text:
+    :return:
+    """
+    print(Fore.YELLOW + text)
+    print(Style.RESET_ALL)

@@ -1,5 +1,6 @@
 import os
 
+from egor.judge.verdict import Verdict
 from egor.util import DIFFERENT_OUTPUT_CONTENT_TEMPLATE, \
     DIFFERENT_OUTPUT_LENGTH_TEMPLATE, PASSED_TEST_CASE, SKIPPED_TEST_CASE
 
@@ -29,7 +30,7 @@ class Checker:
             contestant_output_path = os.path.join(task_meta.output_dir, 'in-{}.out'.format(test_index))
             if test_description['custom']:
                 if test_expected_output_path == '':
-                    diff[test_index] = SKIPPED_TEST_CASE.format(test_index)
+                    diff[test_index] = Verdict.SK, SKIPPED_TEST_CASE.format(test_index)
                     continue
             diff[test_index] = self.compare(contestant_output_path, test_expected_output_path, test_index)
 
@@ -56,12 +57,12 @@ class BasicChecker(Checker):
     :return Message representing the state of the comparison
     """
 
-    def compare(self, output, expected, test_number) -> str:
+    def compare(self, output, expected, test_number) -> (Verdict, str):
         with open(output) as out_f, open(expected) as ex_file:
             output = out_f.readlines()
             expected_output = ex_file.readlines()
             if len(output) != len(expected_output):
-                return DIFFERENT_OUTPUT_LENGTH_TEMPLATE.format(len(expected_output), len(output))
+                return Verdict.PE, DIFFERENT_OUTPUT_LENGTH_TEMPLATE.format(len(expected_output), len(output))
 
             while len(output) and output[len(output) - 1].strip() == '':
                 output.pop()
@@ -70,5 +71,5 @@ class BasicChecker(Checker):
 
             for index, line_pair in enumerate(zip(expected_output, output)):
                 if line_pair[0].strip() != line_pair[1].strip():
-                    return DIFFERENT_OUTPUT_CONTENT_TEMPLATE.format(index + 1, line_pair[0], line_pair[1])
-            return PASSED_TEST_CASE.format(test_number)
+                    return Verdict.WA, DIFFERENT_OUTPUT_CONTENT_TEMPLATE.format(index + 1, line_pair[0], line_pair[1])
+            return Verdict.OK, PASSED_TEST_CASE.format(test_number)

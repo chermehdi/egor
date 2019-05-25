@@ -9,7 +9,8 @@ from egor.config import VERSION
 DEPENDENCIES = [
     'knack',
     'urllib3',
-    'pyperclip'
+    'pyperclip',
+    'colorama'
 ]
 
 with open('README.md', 'r', encoding='utf-8') as f:

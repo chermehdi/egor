@@ -2,6 +2,8 @@ import sys
 
 from knack.log import get_logger
 
+from egor.judge.verdict import Verdict
+from egor.util import print_green_text, print_red_text, print_yellow_text
 from .checker import BasicChecker
 
 logger = get_logger(__name__)
@@ -86,7 +88,13 @@ class TestingStep(Step):
         sep = '=' * 50
         for test_number in report:
             print(sep)
-            print(report[test_number])
+            verdict, message = report[test_number]
+            if verdict == Verdict.OK:
+                print_green_text(message)
+            elif verdict == Verdict.SK:
+                print_yellow_text(message)
+            else:
+                print_red_text(message)
         print(sep)
         return execution_context
 
