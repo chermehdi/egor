@@ -9,3 +9,4 @@ class Verdict(enum.Enum):
     WA = 2,
     PE = 3,
     SK = 4,
+    TL = 5

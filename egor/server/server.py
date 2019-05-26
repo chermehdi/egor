@@ -45,6 +45,8 @@ def create_task(task_description):
     os.makedirs(output_dir_path, exist_ok=True)
     task_meta.input_dir = input_dir_path
     task_meta.output_dir = output_dir_path
+    task_meta.time_limit = task_object['timeLimit']
+    task_meta.memory_limit = task_object['memoryLimit']
     task_meta.tests = []
 
     # Add tests

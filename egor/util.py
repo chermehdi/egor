@@ -64,11 +64,15 @@ DIFFERENT_OUTPUT_CONTENT_TEMPLATE = \
     {}
     - Produced output:
     {}
+    
+    Test case {}, elapsed time {:.3f}ms
     """
 
-PASSED_TEST_CASE = 'Passed test case {}'
+PASSED_TEST_CASE = 'Passed test case {}, elapsed time {:.3f}ms'
 
 SKIPPED_TEST_CASE = 'Skipped test case {}'
+
+TIMED_OUT_TEST_CASE = 'Time limit exceeded when running test case {}'
 
 
 def get_last_input_file_number(input_dir) -> int:
@@ -134,3 +138,11 @@ def print_yellow_text(text: str) -> None:
     """
     print(Fore.YELLOW + text)
     print(Style.RESET_ALL)
+
+
+def kill_process(process) -> None:
+    """
+    Simply kills the process passed as a parameter
+    :param process: executing process
+    """
+    process.kill()

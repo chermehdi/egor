@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+from time import time
 
 from knack.log import get_logger
 
@@ -53,20 +54,37 @@ class CppRunStep(RunStep):
             execution_context['binary_name']) if sys.platform == 'win32' else './{}'.format(
             execution_context['binary_name'])
 
-        skipped_file_names = []
+        skipped_file_names, timed_out = [], []
+
+        run_report = {}
 
         for test_description in task_meta.tests:
 
             test_input_file, test_index = test_description['input_file'], test_description['index']
             test_output_file = os.path.join(output_dir, 'in-{}.out'.format(test_index))
+            run_report[test_index] = {
+                'time_out': False,
+                'skipped': False
+            }
             with open(test_input_file) as in_f, open(test_output_file, "w") as out_f:
                 logger.info('Running your code against input file {}'.format(test_index))
-                return_code = subprocess.call([executable], stdin=in_f, stdout=out_f, cwd=task_meta.dir)
-                if return_code != 0:
-                    skipped_file_names.append(str(test_index))
-                    logger.error('execution on file {} finished with a none 0 exist code'.format(test_index))
+                try:
+                    start_time = time()
 
-        execution_context['skipped_file_names'] = skipped_file_names
+                    return_code = subprocess.call([executable], stdin=in_f, stdout=out_f, cwd=task_meta.dir,
+                                                  timeout=task_meta.time_limit / 1000.0)
+                    if return_code != 0:
+                        skipped_file_names.append(str(test_index))
+                        logger.error('execution on file {} finished with a none 0 exist code'.format(test_index))
+
+                    execution_time = time() - start_time
+
+                    run_report[test_index]['execution_time'] = execution_time
+                except subprocess.TimeoutExpired:
+                    logger.info('execution of file {} timed out'.format(test_index))
+                    run_report[test_index]['time_out'] = True
+
+        execution_context['run_report'] = run_report
 
         return execution_context
 
