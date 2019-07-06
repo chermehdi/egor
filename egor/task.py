@@ -3,6 +3,7 @@ Task related functions, parsing, compiling and testing tasks
 """
 import os
 import sys
+import shutil
 
 import pyperclip
 from knack.log import get_logger
@@ -96,7 +97,8 @@ def remove_task(name):
     """
     This will simply remove all the files associated with a given task
     """
-    print("remove task {name}".format(name=name))
+    task_dir = get_current_directory(name)
+    shutil.rmtree(task_dir)
 
 
 def copy_task(name, lang):
