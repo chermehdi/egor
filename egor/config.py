@@ -10,7 +10,7 @@ COMMAND_NAME = 'egor'
 COMMAND_SETTINGS_DIR = os.path.expanduser(
     os.path.join('~', '.{}'.format(COMMAND_NAME)))
 COMMAND_ENV_PREFIX = COMMAND_NAME.upper()
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 
 
 def get_configuration_value(name, fallback=None):
