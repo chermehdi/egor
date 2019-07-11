@@ -27,7 +27,6 @@ setup(
     url='https://github.com/chermehdi/egor',
     classifiers=[
         'Intended Audience :: Developers',
-        'Intended Audience :: Competitive programmers',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
