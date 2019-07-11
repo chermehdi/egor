@@ -16,11 +16,11 @@
 - And voila, you can start using it as any other command line app, just type egor to see the help, and there is help for
 every subcommand provided by `egor`
 
-![Egor Command](./screenshots/egor.png)
+![Egor Command](https://raw.githubusercontent.com/chermehdi/egor/master/screenshots/egor.png)
 - Open a codeforces or a spoj problem, run `egor task parse` and press the plus button of `Competitive companion`, a new directory with 
 the name of task will be generated, with the `input` and `output` files, and a sample `source` file.
 - When you write the solution for your problem you  can type `egor task test` to test your solution against the provided sample `input`.
-![Egor Test](./screenshots/egor-test.png)
+![Egor Test](https://raw.githubusercontent.com/chermehdi/egor/master/screenshots/egor-test.png)
 - You can run `egor task copy` to copy the source code of your solution to the clipboard
 - The location of the configuration file to configure some default values is `${home_dir}/.egor/configuration` and it's in the `reStructuredText` format,This is sample fo a configuration file:
 ```
@@ -32,7 +32,7 @@ the name of task will be generated, with the `input` and `output` files, and a s
     first_run = yes
 ```
 - in doubt you can always run `egor task -h` to see the help of commands.
-![Egor Help](./screenshots/egor-help.png)
+![Egor Help](https://raw.githubusercontent.com/chermehdi/egor/master/screenshots/egor-help.png)
 ## Developer guide
 
 - You should have pip installed
