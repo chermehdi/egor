@@ -8,6 +8,10 @@
   `CHelper` tool (maybe because they don't like the added overhead of IDE's or the prefere eclipse or, as most of the people i know, they use `C++`, parsing tasks can become tedious, and here where **egor** can help, by providing a simple 
   cli for parsing and running your tasks.
 
+## Installation
+- To install you should have `python3` installed, if that's the case you just need to run
+ `pip install egor`.
+- If you have multiple versions of `python` you need to explicitly run `python3 -m pip install egor` to be sure that `python3` is used.
 
 ## Usage
 
