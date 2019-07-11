@@ -21,6 +21,7 @@ setup(
     version=VERSION,
     description='A Task automation tool for competitive programmers',
     long_description=README,
+    long_description_content_type="text/markdown",
     license='MIT',
     author='Cheracher Mehdi',
     author_email='mehdi.cheracher@gmail.com',
